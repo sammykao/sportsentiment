@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<title> Team List </title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+  <div class="p-4 col-sm-2 col-lg-2 col-md-2 text-white "> <i class="bi bi-trophy p-2"></i> Sammy's Fan Zone</div> 
+  <div class="p-3 col-sm-2 col-md-2 col-lg-2 position-absolute end-0">
+    <div class="dropdown p-2 pr-3" >
+      <button style="float:right;" class="btn btn-secondary dropdown-toggles align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Teams
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item text-white" href="index.htmls">Philadelphia Union</a></li>
+        <li><a class="dropdown-item text-white" href="#">Coming Soon...</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <img class="rounded mx-auto d-block" src="{{url_for('static', filename = 'union.png')}}" style="height:300px; width:320px;">
+  </div>
+  <div class="row">
+    <h1 class="text-white justify-content-center flex text-center"> Philadelphia Union </h1>
+  </div>
+  <br>
+  <div class="row">
+    <p class="text-center flex text-white text-lg">This page models fan sentiment for the Philadelphia Union soccer team <br>
+    in respect to news, fixtures, and the implied probability of moneyline hitting for their next upcoming match. All in real time.</p>
+  <div>
+</div>
+<br> <br> 
+<div class="container">
+  <div class="text-center flex">
+    <canvas id="myChart" class="text-white rounded flex" style="background-color:lightgrey; width:85%; margin:0 auto;"></canvas>
+    <script>       
+        Xset = {{ sent_times | tojson }};
+        Yset = {{ sent_scores | tojson }};
+        const myChart = new Chart(document.getElementById('myChart'), {
+          type: 'line',
+          data: {
+            labels: Xset,
+            datasets: [{
+              fill: false,
+              lineTension: .3,
+              label: 'Sentiment Scores',
+              pointBackgroundColor: "rgba(184, 4, 4, 1)",
+              borderColor: "red",
+              data:Yset
+            }]
+          },
+          options: {
+              scales: {
+                y: {
+                  min: 0,
+                  max: 100
+                }
+              },
+              plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Sentiment Score vs. Time',
+                    color: 'black',
+                    font: {
+                      size: 20,
+                      family: 'Outfit',
+                      weight: 'normal'
+                    }
+                }
+              }
+          }
+        });
+
+    </script>
+  </div>
+  <br> 
+  <div class="text-center flex">
+    <canvas id="secChart" class="text-white rounded flex" style="background-color:lightgrey; width:85%; margin:0 auto;"></canvas>
+    <script>       
+      Xset2 = {{ line_times | tojson }};
+      Yset2 = {{ line_odds | tojson }};
+      const secChart = new Chart(document.getElementById('secChart'), {
+        type: 'line',
+          data: {
+            labels: Xset2,
+            datasets: [{
+              fill: false,
+              lineTension: .3,
+              label: 'Moneyline Odds',
+              pointBackgroundColor: "rgba(184, 4, 4, 1)",
+              borderColor: "red",
+              data:Yset2
+            }]
+          },
+          options: {
+              scales: {
+                y: {
+                  min: 0,
+                  max: 100
+                }
+              },
+              plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Implied Moneyline Prob. % vs. Time',
+                    color: 'black',
+                    font: {
+                      size: 20,
+                      family: 'Outfit',
+                      weight: 'normal'
+                    }
+                }
+              }
+          }
+      });
+
+    </script>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card flex text-center" style="width: 100%; margin: 1.5rem auto;">
+        <div class="card-body">
+          <!--Table-->
+          <table class="table-responsive">
+          </table>
+          <table class="table table-hover table-forum text-center">
+            <!--Table head-->
+            <thead>
+              <tr>
+                <th></th>
+                <th class="text-left"> <h4> Upcoming Fixtures </h4></th>
+                <th>Match time</th>
+              </tr>
+            </thead>
+            <!--Table head-->
+            <!--Table body-->
+            <tbody>
+              {% for fixture in fixtures %}
+              <tr>
+                <td scope="row" class="text-nowrap">
+                  <p type="button" class="btn btn-outline-primary btn-md p-2 m-0 waves-effect" target="blank">
+                    <i class="bi bi-suit-club-fill ml-2"></i>
+                  </p>
+                </td>
+                <td class="text-start">
+                  <p class="font-weight-bold text-danger"> {{ fixture.event }} </p>
+                  <div class="my-2">
+                    <span class="badge bg-info mx-1">upcoming</span>
+                  </div>
+                  <div></div>
+                </td>
+                <td>
+                  <span class="badge bg-secondary mx-1"> {{ fixture.matchtime }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <!--Table body-->
+          </table>
+      
+        </div>
+      </div>
+      
+    </div>
+
+    <div class="col-sm-6">
+      <div class="card flex text-center" style="width: 100%; margin: 1.5rem auto;">
+        <div class="card-body">
+          <!--Table-->
+          <table class="table-responsive">
+          </table>
+          <table class="table table-hover table-forum text-center">
+            <!--Table head-->
+            <thead>
+              <tr>
+                <th></th>
+                <th class="text-left"> <h4>Top Trending Stories </h4></th>
+                <th>Sources</th>
+              </tr>
+            </thead>
+            <!--Table head-->
+            <!--Table body-->
+            <tbody>
+              {% for article in articles %}
+              <tr>
+                <td scope="row" class="text-nowrap">
+      
+                  <a href="{{ article.link }}" type="button" class="btn btn-outline-dark-green btn-md p-2 m-0 waves-effect" target="blank">
+                    <i class="bi bi-newspaper ml-1"></i>
+                  </a>
+                  <a href="{{ article.link }}" type="button" class="btn btn-outline-danger btn-md p-2 m-0 waves-effect" target="blank">
+                    <i class="bi bi-arrow-right-square-fill ml-2"></i>
+                  </a>
+                </td>
+                <td class="text-start">
+                  <a href="{{ article.link }}" class="font-weight-bold blue-text" target="blank">
+                    {{ article.title }} </a>
+                  <div class="my-2">
+                    <span class="badge bg-primary mx-1">trending</span>
+                    <span> {{ article.time }} </span>
+                  </div>
+                  <div></div>
+                </td>
+                <td>
+                  <span class="badge bg-secondary mx-1"> {{ article.source }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <!--Table body-->
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+<div class="row">
+  <p class="text-center flex text-white text-md"> <br> <br> <br> @ Copyright Sammy Kao 2023</p>
+<div>
+{% endblock %}
