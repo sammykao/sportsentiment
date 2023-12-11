@@ -14,15 +14,6 @@ which is currently non-functional
 - Scrapes twitter date by keyword for sports team sentiment and process through pretrained neural network to derive sentiment score
 - Tracks scores in FLaskSQL db and compares with betting lines
 
-
-## Installation
-To install and run this project - install dependencies using npm and then start your server:
-
-```
-$ npm install
-$ npm start
-```
-
 ### live link:
 - (https://www.kaoflow.com/)
 
